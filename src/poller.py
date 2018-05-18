@@ -21,9 +21,13 @@ class Poller(object):
         self.check_every = check_every
         self.done = False
         self.loggers = []
+        self.monitors = []
         
     def add_logger(self, new_logger):
         self.loggers.append(new_logger)
+        
+    def add_monitor(self, new_monitor):
+        self.monitors.append(new_monitor)
         
     def poll(self):
         while not self.done:
@@ -38,6 +42,9 @@ class Poller(object):
                 
                 for logger in self.loggers:
                     logger.log(values)
+                    
+                for monitor in self.monitors:
+                    monitor.check(values)
             
             sleep(self.check_every)
         

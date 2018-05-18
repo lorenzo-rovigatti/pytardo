@@ -6,13 +6,13 @@ Created on 18 mag 2018
 
 import time
 
+
 class FileLogger(object):
     '''
     Writes arduino readings to a file
     '''
 
-
-    def __init__(self, filename, append=True):
+    def __init__(self, filename, append):
         '''
         Constructor
         '''
@@ -29,7 +29,5 @@ class FileLogger(object):
         for k in sorted(dict_values.keys()):
             line += " - %s %s" % (str(k), str(dict_values[k]))  
         
-        print line
         with open(self.filename, mode) as logfile:
             print >> logfile, line
-            
