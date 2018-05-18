@@ -7,11 +7,11 @@ Created on 17 mag 2018
 import serial
 from time import sleep
 
+
 class Poller(object):
     '''
-    A class that continously pesters arduino by asking it what is the current temperature
+    A class that continously pesters arduino to get the current readings
     '''
-
 
     def __init__(self, port_name, check_every):
         '''

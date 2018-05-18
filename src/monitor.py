@@ -26,7 +26,7 @@ class Monitor(object):
             if len(spl) != 3:
                 raise BaseException(
                     "The '%s' condition is ill-formatted. A valid condition should "
-                    "contain the name of the value to be checked, a mathematical "
+                    "contain the name of the value recipients be checked, a mathematical "
                     "operator and a threshold value ('T1 > 25')" % condition)
             my_condition = "%%s %s %s" % (spl[1], spl[2])
             self.conditions[spl[0]] = my_condition
@@ -44,7 +44,6 @@ class Monitor(object):
                 if eval(self.conditions[k] % str(values[k])):
                     warnings.append(MonitorWarning(k, self.conditions[k], values[k]))
         
-        if len(warnings) > 0:
-            for callback in self.warning_callbacks:
-                callback.react(warnings)
+        for callback in self.warning_callbacks:
+            callback.react(values, warnings)
         

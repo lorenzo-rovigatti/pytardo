@@ -16,9 +16,11 @@ file_logger = loggers.FileLogger("prova.dat", True)
 p.add_logger(file_logger)
 
 conditions = ["T1 > 20"]
-callback = callbacks.WriteToFile("warnings.dat", True)
+callback_file = callbacks.WriteToFile("warnings.dat", True)
+callback_email = callbacks.SendEmail("lorenzo.rovigatti@gmail.com", ["lorenzo.rovigatti@uniroma1.it", ])
 monitor = monitor.Monitor(conditions)
-monitor.add_warning_callback(callback)
+monitor.add_warning_callback(callback_file)
+monitor.add_warning_callback(callback_email)
 p.add_monitor(monitor)
 
 if __name__ == '__main__':
