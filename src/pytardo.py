@@ -6,10 +6,11 @@ Created on 17 mag 2018
 '''
 
 import poller
-import daemon
-import sys
+import loggers
+
+file_logger = loggers.FileLogger("prova.dat")
+p = poller.Poller("/dev/ttyUSB0", 1)
+p.add_logger(file_logger)
 
 if __name__ == '__main__':
-    with daemon.DaemonContext(stdout=sys.stdout) as daemon_context:
-        p = poller.Poller("/dev/ttyUSB0", 1)
-        p.poll()
+    p.poll()
