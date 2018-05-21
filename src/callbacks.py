@@ -38,15 +38,24 @@ class SendEmail(object):
     Sends emails 
     '''
     
-    def __init__(self, from_address, recipients):
+    def __init__(self, from_address, recipients, min_interval):
         self.from_address = from_address
         self.recipients = recipients
         self.subject = "Patchy Monitor Warning"
-        self.base_text = "%s\nThe following readings have exceeded their associated user-defined thresholds:\n"
-        self.send = True
+        self.base_text = "%s\n\nThe following readings have exceeded their associated user-defined thresholds:\n"
+        self.last_warnings = []
+        self.min_interval = min_interval
+        self.time_last_email = 0
+        
+    def _send_email(self, msg):
+        if (time.time() - self.time_last_email) > self.min_interval:
+            s = smtplib.SMTP('localhost')
+            s.sendmail(self.from_address, self.recipients, msg.as_string())
+            s.quit()
+            self.time_last_email = time.time()
         
     def react(self, current_values, warnings):
-        if len(warnings) > 0 and self.send:
+        if len(warnings) > 0:
             text = self.base_text % time.strftime('%Y-%m-%d %H:%M:%S')
             for w in warnings:
                 condition = str(w.condition) % w.value
@@ -57,8 +66,7 @@ class SendEmail(object):
             msg['From'] = self.from_address
             msg['To'] = ",".join(self.recipients)
             
-            s = smtplib.SMTP('localhost')
-            s.sendmail(self.from_address, self.recipients, msg.as_string())
-            s.quit()
-            self.send = False
+            self._send_email(msg)
+            
+            self.last_warnings = warnings
             
