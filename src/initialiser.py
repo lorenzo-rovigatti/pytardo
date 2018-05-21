@@ -21,9 +21,19 @@ def init_from_config_file(config_file):
 
     p = poller.Poller(port, polling_interval)
 
-    if config.has_option("loggers", "file_logger"):
-        file_logger = loggers.FileLogger(config.get("loggers", "file_logger"), True)
-        p.add_logger(file_logger)
+    logger_sections = config.get("poller", "loggers").split(" ")
+    for logger_section in logger_sections:
+        logger_type = config.get(logger_section, "type")
+        if logger_type == "FileLogger":
+            logger = loggers.FileLogger(config.get(logger_section, "filename"), True)
+        elif logger_type == "MySQLLogger":
+            user = config.get(logger_section, "username")
+            pwd = config.get(logger_section, "password")
+            database = config.get(logger_section, "database")
+            table = config.get(logger_section, "table")
+            logger = loggers.MySQLLogger("root", "arduino_pwd", "arduino", "T_time_series")
+            
+        p.add_logger(logger)
     
     conditions = ["T1 > 20"]
     callback_file = callbacks.WriteToFile("warnings.dat", True)

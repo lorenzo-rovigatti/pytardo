@@ -12,3 +12,4 @@
 
 * pySerial
 * python-daemon
+* MySQL-python

@@ -1,6 +1,16 @@
 [poller]
 port = /dev/ttyUSB0
 polling_interval = 1
+loggers = file_logger mysql_logger
 
-[loggers]
-file_logger = prova.dat
+[file_logger]
+type = FileLogger
+filename = prova.dat
+
+[mysql_logger]
+type = MySQLLogger
+username = arduino
+password = arduino_pwd
+database = arduino
+table = T_time_series
+
