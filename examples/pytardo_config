@@ -1,0 +1,6 @@
+[poller]
+port = /dev/ttyUSB0
+polling_interval = 1
+
+[loggers]
+file_logger = prova.dat
