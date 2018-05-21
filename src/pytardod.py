@@ -8,7 +8,7 @@ Created on 18 mag 2018
 import sys
 from daemon.pidfile import TimeoutPIDLockFile
 import daemon
-from pytardo import p
+import initialiser
 
 if __name__ == '__main__':
     pidfile = TimeoutPIDLockFile("/var/run/pytardo.pid")
@@ -16,6 +16,7 @@ if __name__ == '__main__':
         stdout=sys.stdout,
         pidfile=pidfile
     )
+    p = initialiser.init_from_config_file(sys.argv[1])
     
     with daemon_context:
         p.poll()

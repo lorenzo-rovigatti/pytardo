@@ -13,12 +13,12 @@ class Poller(object):
     A class that continously pesters arduino to get the current readings
     '''
 
-    def __init__(self, port_name, check_every):
+    def __init__(self, port_name, polling_interval):
         '''
         Constructor
         '''
         self.ser = serial.Serial(port_name)
-        self.check_every = check_every
+        self.polling_interval = polling_interval
         self.done = False
         self.loggers = []
         self.monitors = []
@@ -46,5 +46,5 @@ class Poller(object):
                 for monitor in self.monitors:
                     monitor.check(values)
             
-            sleep(self.check_every)
+            sleep(self.polling_interval)
         
