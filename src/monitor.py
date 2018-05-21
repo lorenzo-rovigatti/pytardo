@@ -4,6 +4,8 @@ Created on 18 mag 2018
 @author: lorenzo
 '''
 
+import conditions
+
 class MonitorWarning(object):
     def __init__(self, name, condition, value):
         self.name = name
@@ -16,20 +18,14 @@ class Monitor(object):
     Checks the arduino readings against user-defined conditions. If the conditions are verified, call
     '''
 
-    def __init__(self, conditions):
+    def __init__(self, condition_lines):
         '''
         Constructor
         '''
         self.conditions = {}
-        for condition in conditions:
-            spl = [s.strip() for s in condition.split()]
-            if len(spl) != 3:
-                raise BaseException(
-                    "The '%s' condition is ill-formatted. A valid condition should "
-                    "contain the name of the value recipients be checked, a mathematical "
-                    "operator and a threshold value ('T1 > 25')" % condition)
-            my_condition = "%%s %s %s" % (spl[1], spl[2])
-            self.conditions[spl[0]] = my_condition
+        for condition_line in condition_lines:
+            new_condition = conditions.Threshold(condition_line)
+            self.conditions[new_condition.key] = new_condition
             
         self.warning_callbacks = []
         
@@ -41,7 +37,7 @@ class Monitor(object):
         
         for k in values.keys():
             if k in self.conditions:
-                if eval(self.conditions[k] % str(values[k])):
+                if self.conditions[k].is_met(values[k]):
                     warnings.append(MonitorWarning(k, self.conditions[k], values[k]))
         
         for callback in self.warning_callbacks:

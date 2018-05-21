@@ -28,7 +28,7 @@ class WriteToFile(object):
         with open(self.filename, mode) as output:
             for w in warnings:
                 line = time.strftime('%Y-%m-%d %H:%M:%S')
-                condition = w.condition % w.value
+                condition = str(w.condition) % w.value
                 line += " %s = %s" % (w.name, condition)
                 print >> output, line
 
@@ -49,7 +49,7 @@ class SendEmail(object):
         if len(warnings) > 0 and self.send:
             text = self.base_text % time.strftime('%Y-%m-%d %H:%M:%S')
             for w in warnings:
-                condition = w.condition % w.value
+                condition = str(w.condition) % w.value
                 text += "\n%s = %s" % (w.name, condition)
         
             msg = MIMEText(text)
