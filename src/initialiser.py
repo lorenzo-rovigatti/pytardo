@@ -31,7 +31,7 @@ def init_from_config_file(config_file):
             pwd = config.get(logger_section, "password")
             database = config.get(logger_section, "database")
             table = config.get(logger_section, "table")
-            logger = loggers.MySQLLogger("root", "arduino_pwd", "arduino", "T_time_series")
+            logger = loggers.MySQLLogger(user, pwd, database, table)
             
         p.add_logger(logger)
     
