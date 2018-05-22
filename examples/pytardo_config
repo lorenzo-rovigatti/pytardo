@@ -2,10 +2,12 @@
 port = /dev/ttyUSB0
 polling_interval = 1
 loggers = file_logger mysql_logger
+monitors = monitor
 
 [file_logger]
 type = FileLogger
 filename = prova.dat
+append = true
 
 [mysql_logger]
 type = MySQLLogger
@@ -14,3 +16,17 @@ password = arduino_pwd
 database = arduino
 table = T_time_series
 
+[monitor]
+conditions = T1 > 20, T2 < 25
+callbacks = file_callback email_callback
+
+[file_callback]
+type = WriteToFile
+filename = warnings.dat
+append = true
+
+[email_callback]
+type = SendEmail
+from = lorenzo.rovigatti@gmail.com
+recipients = lorenzo.rovigatti@uniroma1.it, tavagnacco.letizia@gmail.com
+min_interval = 60

@@ -67,6 +67,5 @@ class SendEmail(object):
             msg['To'] = ",".join(self.recipients)
             
             self._send_email(msg)
-            
             self.last_warnings = warnings
             

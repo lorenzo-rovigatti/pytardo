@@ -5,18 +5,22 @@ Created on 18 mag 2018
 @author: lorenzo
 '''
 
-import sys
 from daemon.pidfile import TimeoutPIDLockFile
 import daemon
-import initialiser
+from pytardo import pytardo
 
 if __name__ == '__main__':
     pidfile = TimeoutPIDLockFile("/var/run/pytardo.pid")
+    output_file = open("/var/log/pytardo.log", "a+")
     daemon_context = daemon.DaemonContext(
-        stdout=sys.stdout,
+        stdout=output_file,
+        stderr=output_file,
         pidfile=pidfile
     )
-    p = initialiser.init_from_config_file(sys.argv[1])
     
+    pytardo_poller = pytardo()
     with daemon_context:
-        p.poll()
+        pytardo_poller.poll()
+        
+    output_file.close()
+    

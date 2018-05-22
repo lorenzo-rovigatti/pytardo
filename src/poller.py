@@ -17,7 +17,7 @@ class Poller(object):
         '''
         Constructor
         '''
-        self.ser = serial.Serial(port_name)
+        self.port_name = port_name
         self.polling_interval = polling_interval
         self.done = False
         self.loggers = []
@@ -30,9 +30,10 @@ class Poller(object):
         self.monitors.append(new_monitor)
         
     def poll(self):
+        ser = serial.Serial(self.port_name)
         while not self.done:
-            self.ser.write("0")
-            line = self.ser.readline().strip()
+            ser.write("0")
+            line = ser.readline().strip()
             if line.endswith(">"):
                 T1, T2 = [float(x) for x in line.split("|")[0:2]]
                 values = {
@@ -47,4 +48,5 @@ class Poller(object):
                     monitor.check(values)
             
             sleep(self.polling_interval)
+        ser.close()
         
