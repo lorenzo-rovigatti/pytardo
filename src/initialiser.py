@@ -10,9 +10,15 @@ import callbacks
 import loggers
 import monitor
 import poller
+import sys
 
 
 def init_from_config_file(config_file):
+    try:
+        open(config_file)
+    except:
+        raise BaseException("Unreadable configuration file '%s'" % config_file)
+    
     config = ConfigParser.SafeConfigParser()
     config.read(config_file)
 
@@ -25,7 +31,12 @@ def init_from_config_file(config_file):
     logger_sections = config.get("poller", "loggers").split(" ")
     for logger_section in logger_sections:
         logger_type = config.get(logger_section, "type")
-        if logger_type == "FileLogger":
+        if logger_type == "ScreenLogger":
+            stream = sys.stdout
+            if config.has_option(logger_section, "stream"):
+                stream = config.get(logger_section, "stream")
+            logger = loggers.ScreenLogger(stream)
+        elif logger_type == "FileLogger":
             append = config.getboolean(logger_section, "append")
             filename = config.get(logger_section, "filename")
             logger = loggers.FileLogger(filename, append)

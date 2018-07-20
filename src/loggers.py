@@ -9,6 +9,25 @@ import MySQLdb
 from _mysql_exceptions import OperationalError
 
 
+class ScreenLogger(object):
+    '''
+    Writes arduino readings to the screen
+    '''
+    
+    def __init__(self, stream):
+        '''
+        Constructor
+        '''
+        self.stream = stream
+        
+    def log(self, dict_values):
+        line = time.strftime('%Y-%m-%d %H:%M:%S')
+        for k in sorted(dict_values.keys()):
+            line += " - %s = %s" % (str(k), str(dict_values[k]))
+              
+        print >> self.stream, line
+
+
 class FileLogger(object):
     '''
     Writes arduino readings to a file
@@ -29,7 +48,7 @@ class FileLogger(object):
 
         line = time.strftime('%Y-%m-%d %H:%M:%S')
         for k in sorted(dict_values.keys()):
-            line += " - %s %s" % (str(k), str(dict_values[k]))  
+            line += " - %s = %s" % (str(k), str(dict_values[k]))  
         
         with open(self.filename, mode) as logfile:
             print >> logfile, line
@@ -49,7 +68,7 @@ class MySQLLogger(object):
 
         # test the db connection
         try:
-            db = MySQLdb.connect(host, user, pwd, database)
+            MySQLdb.connect(host, user, pwd, database)
         except OperationalError as e:
             raise BaseException("Caught the following error while connecting to the MySQL database: %s" % (e))
 
