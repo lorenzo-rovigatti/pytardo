@@ -30,23 +30,26 @@ class Poller(object):
         self.monitors.append(new_monitor)
         
     def poll(self):
-        ser = serial.Serial(self.port_name)
+        ser = serial.Serial(self.port_name, 9600, timeout=1)
         while not self.done:
-            ser.write("0")
-            line = ser.readline().strip()
-            if line.endswith(">"):
-                T1, T2 = [float(x) for x in line.split("|")[0:2]]
-                values = {
-                    "T1" : T1,
-                    "T2" : T2
-                    }
-                
+            data = ser.read(ser.inWaiting()).split("\r\n")
+            # get rid of empty lines
+            data = filter(lambda x: len(x.strip()) > 0, data)
+            # select the last line
+            if len(data) > 0:
+                line = data[-1]
+                values = {}
+                for reading in line.split(","):
+                    k, v = [x.strip() for x in reading.split("=")]
+                    values[k] = float(v)
+            
                 for logger in self.loggers:
                     logger.log(values)
-                    
+                     
                 for monitor in self.monitors:
                     monitor.check(values)
-            
+
+            ser.write("0\n")            
             sleep(self.polling_interval)
         ser.close()
         

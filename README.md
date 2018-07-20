@@ -1,5 +1,11 @@
 # Pytardo
 
+## Arduino setup
+
+The Arduino board should be set up so that it prints out a line containing comma-separated readings whenever something gets written to the serial port. An output example would be:
+
+	T1 = 20, T2 = 32, c = 0.1
+
 ## Architecture
 
 * The `Poller` class continously polls arduino to get the readings.
