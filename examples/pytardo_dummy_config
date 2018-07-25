@@ -1,0 +1,29 @@
+[poller]
+port = dummy
+polling_interval = 1
+loggers = file_logger screen_logger
+monitors = monitor
+
+[file_logger]
+type = FileLogger
+filename = prova.dat
+append = true
+
+[screen_logger]
+type = ScreenLogger
+stream = stderr
+
+[monitor]
+conditions = T1 > 20, T2 < 25
+callbacks = file_callback email_callback
+
+[file_callback]
+type = WriteToFile
+filename = warnings.dat
+append = true
+
+[email_callback]
+type = SendEmail
+from = lorenzo.rovigatti@gmail.com
+recipients = lorenzo.rovigatti@uniroma1.it, tavagnacco.letizia@gmail.com
+min_interval = 60

@@ -4,7 +4,6 @@ Created on 17 mag 2018
 @author: lorenzo
 '''
 
-import serial
 from time import sleep
 
 
@@ -29,10 +28,23 @@ class Poller(object):
     def add_monitor(self, new_monitor):
         self.monitors.append(new_monitor)
         
+    def _get_serial(self):
+        if self.port_name == "dummy":
+            import dummyserial
+            
+            responses = {
+                "0\n" : "T1 = 21, T2 = 40"
+            }
+            
+            return dummyserial.Serial(port=self.port_name, baud=9600, timeout=1, ds_responses=responses)
+        else:
+            import serial
+            return serial.Serial(self.port_name, 9600, timeout=1)
+        
     def poll(self):
-        ser = serial.Serial(self.port_name, 9600, timeout=1)
+        ser = self._get_serial()
         while not self.done:
-            data = ser.read(ser.inWaiting()).split("\r\n")
+            data = ser.read(ser.outWaiting()).split("\r\n")
             # get rid of empty lines
             data = filter(lambda x: len(x.strip()) > 0, data)
             # select the last line

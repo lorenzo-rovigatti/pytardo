@@ -32,9 +32,16 @@ def init_from_config_file(config_file):
     for logger_section in logger_sections:
         logger_type = config.get(logger_section, "type")
         if logger_type == "ScreenLogger":
-            stream = sys.stdout
+            stream_name = "stdout"
             if config.has_option(logger_section, "stream"):
-                stream = config.get(logger_section, "stream")
+                stream_name = config.get(logger_section, "stream")
+            
+            if stream_name == "stdout":
+                stream = sys.stdout
+            elif stream_name == "stderr":
+                stream = sys.stderr
+            else:
+                raise BaseException("Invalid stream '%s'" % stream_name)
             logger = loggers.ScreenLogger(stream)
         elif logger_type == "FileLogger":
             append = config.getboolean(logger_section, "append")
