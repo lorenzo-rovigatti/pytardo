@@ -10,7 +10,7 @@ __license__ = 'Apache License, Version 2.0'
 __copyright__ = 'Copyright 2016 Orion Labs, Inc.'
 
 
-LOG_LEVEL = logging.DEBUG
+LOG_LEVEL = logging.WARNING
 LOG_FORMAT = logging.Formatter(
     '%(asctime)s dummyserial %(levelname)s %(name)s.%(funcName)s:%(lineno)d'
     ' - %(message)s')

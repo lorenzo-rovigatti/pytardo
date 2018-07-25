@@ -6,7 +6,7 @@ monitors = monitor
 
 [file_logger]
 type = FileLogger
-filename = prova.dat
+filename = readings.dat
 append = true
 
 [screen_logger]
@@ -25,5 +25,5 @@ append = true
 [email_callback]
 type = SendEmail
 from = lorenzo.rovigatti@gmail.com
-recipients = lorenzo.rovigatti@uniroma1.it, tavagnacco.letizia@gmail.com
+recipients = lorenzo.rovigatti@uniroma1.it
 min_interval = 60

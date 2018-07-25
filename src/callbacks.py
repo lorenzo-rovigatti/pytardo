@@ -4,6 +4,7 @@ Created on 18 mag 2018
 @author: lorenzo
 '''
 import time
+import subprocess
 import smtplib
 from email.mime.text import MIMEText
 
@@ -69,3 +70,33 @@ class SendEmail(object):
             self._send_email(msg)
             self.last_warnings = warnings
             
+            
+import os
+def change_ids(user_uid, user_gid):
+    """
+    Return a function that calls setuid and setgid to the given values
+    """ 
+
+    def set_ids():
+        os.setgid(user_gid)
+        os.setuid(user_uid)
+
+    return set_ids
+
+class CallScript(object):
+    """
+    Call a local script. The script can be optionally run as another user
+    """
+    
+    def __init__(self, script_path, gid=None, uid=None):
+        self.script = script_path
+        self.uid = uid
+        self.gid = gid
+        
+    def react(self, current_values, warnings):
+        if len(warnings) > 0:
+            if self.uid != None and self.gid != None:
+                subprocess.call(self.script, shell=True, preexec_fn=change_ids(self.uid, self.gid))
+            else:
+                subprocess.call(self.script, shell=True)
+        

@@ -19,22 +19,24 @@ def init_from_config_file(config_file):
     except:
         raise BaseException("Unreadable configuration file '%s'" % config_file)
     
-    config = ConfigParser.SafeConfigParser()
+    defaults = {
+        "stream" : "stdout"
+    }
+    
+    config = ConfigParser.SafeConfigParser(defaults=defaults)
     config.read(config_file)
 
     port = config.get("poller", "port")
     polling_interval = config.getfloat("poller", "polling_interval")
 
     p = poller.Poller(port, polling_interval)
-
+    
     # TODO: move this part to a factory-like function in the loggers.py file
     logger_sections = config.get("poller", "loggers").split(" ")
     for logger_section in logger_sections:
         logger_type = config.get(logger_section, "type")
         if logger_type == "ScreenLogger":
-            stream_name = "stdout"
-            if config.has_option(logger_section, "stream"):
-                stream_name = config.get(logger_section, "stream")
+            stream_name = config.get(logger_section, "stream")
             
             if stream_name == "stdout":
                 stream = sys.stdout
@@ -76,7 +78,17 @@ def init_from_config_file(config_file):
                 from_address = config.get(callback_section, "from")
                 recipients = config.get(callback_section, "recipients").split(",")
                 min_interval = config.getfloat(callback_section, "min_interval")
-                callback= callbacks.SendEmail(from_address, recipients, min_interval)
+                callback = callbacks.SendEmail(from_address, recipients, min_interval)
+            elif callback_type == "CallScript":
+                options = {
+                 "script_path" : config.get(callback_section, "path")
+                }
+                if config.has_option(callback_section, "uid_gid"):
+                    uid, gid = config.get(callback_section, "uid_gid").split()
+                    options['uid'] = int(uid)
+                    options['gid'] = int(gid)
+                    
+                callback = callbacks.CallScript(**options)
             else:
                 raise BaseException("Invalid callback '%s'" % callback_type)
                 

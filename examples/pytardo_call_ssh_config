@@ -1,0 +1,23 @@
+[poller]
+port = /dev/ttyUSB0
+polling_interval = 1
+loggers = screen_logger
+monitors = monitor
+
+[screen_logger]
+type = ScreenLogger
+stream = stderr
+
+[monitor]
+conditions = T1 > 20, T2 < 25
+callbacks = file_callback call_script
+
+[file_callback]
+type = WriteToFile
+filename = warnings.dat
+append = true
+
+[call_script]
+type = CallScript
+path = ssh mycomputer.myserver.com ls
+uid_gid = 1000 1000
