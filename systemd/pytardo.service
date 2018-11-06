@@ -1,0 +1,11 @@
+[Unit]
+Description=Pytardo
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2
+ExecStart=/usr/bin/python /home/lorenzo/pytardo/src/pytardo.py /home/lorenzo/pytardo_config
+
+[Install]
+WantedBy=default.target

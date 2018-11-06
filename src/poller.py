@@ -44,7 +44,7 @@ class Poller(object):
     def poll(self):
         ser = self._get_serial()
         while not self.done:
-            data = ser.read(ser.outWaiting()).split("\r\n")
+            data = ser.read(ser.inWaiting()).split("\r\n")
             # get rid of empty lines
             data = filter(lambda x: len(x.strip()) > 0, data)
             # select the last line

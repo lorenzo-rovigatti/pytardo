@@ -185,8 +185,8 @@ class Serial(object):
         else:
             return return_str
 
-    def out_waiting(self):  # pylint: disable=C0103
+    def in_waiting(self):  # pylint: disable=C0103
         """Returns length of waiting output data."""
         return len(self._waiting_data)
 
-    outWaiting = out_waiting  # pyserial 2.7 / 3.0 compat.
+    inWaiting = in_waiting  # pyserial 2.7 / 3.0 compat.
